@@ -20,7 +20,7 @@ jobs:
 
       - name: Publish a single-file exe
         run: >
-          dotnet publish GamepadDesktopNav.csproj
+          dotnet publish GamepadDesktopNav/GamepadDesktopNav.csproj
           -c Release
           -r win-x64
           --self-contained true
