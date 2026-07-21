@@ -302,10 +302,27 @@ internal static class Program
 
         ushort previousButtons = 0;
         Profile previousProfile = Profile.Passthrough;
+        DateTime lastDebugPrint = DateTime.MinValue;
 
         while (true)
         {
             int result = GetControllerState(0, out XINPUT_STATE state);
+
+            // --- DEBUG: prints controller status every 2 seconds ---
+            if ((DateTime.Now - lastDebugPrint).TotalSeconds >= 2)
+            {
+                lastDebugPrint = DateTime.Now;
+                if (result != 0)
+                {
+                    Console.WriteLine($"[DEBUG] No XInput controller detected at slot 0 (result code: {result}). " +
+                                       "If this is a DualSense, it usually needs Steam or DS4Windows running to translate it into an Xbox-compatible signal.");
+                }
+                else
+                {
+                    Console.WriteLine($"[DEBUG] Controller OK. Foreground process: '{GetForegroundProcessName()}' | Active profile: {GetActiveProfile()} | Raw buttons: 0x{state.Gamepad.wButtons:X4}");
+                }
+            }
+            // --- END DEBUG ---
 
             if (result == 0) // controller connected at index 0
             {
